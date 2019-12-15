@@ -11,7 +11,6 @@ import { CircleObj, Circle } from './Circle';
 import { duration, distance } from './anim-lib';
 import { map, takeWhile, tap } from 'rxjs/operators';
 import { useClickListener } from './hooks';
-import { useSpring, animated } from 'react-spring';
 // this one will return a function
 const elastic = (bounciness: number = 1) => {
 	const p = bounciness * Math.PI;
@@ -63,25 +62,35 @@ function App(props) {
 	const inputEl = useRef(null);
 	const eventListener = ({ clientX, clientY }) => {
 		// circle1.cx = clientX;
+
+		let xFrameTotal = 0;
+		let xdist = clientX - circle1.cx;
+		let origx = circle1.cx;
+		let origY = circle1.cy;
+		console.log('xdist', xdist);
+		//  we should call when its truly finished
+		// otherwise we get crazy animations...
+		moveBall(1000, xdist, circle1, 'cx', origx);
+		moveBall(1000, clientY - circle1.cy, circle1, 'cy', origY);
+		// moveBall(2000,xdist , frame => {
+		// 	// console.log(frame);
+		// 	xFrameTotal += frame;
+		// 	circle1.cx = origx + frame;
+		// });
+		// moveBall(2000, clientY - 	circle1.cy, frame => {
+		// 	// console.log('hmm');
+		// 	circle1.cy =  origY + frame;;
+		// });
+
+		// circle1.cy = clientY;
 	};
 	useClickListener(inputEl, eventListener);
 	// console.log(props.children);
-	const props2 = useSpring({ cx: 300, r: 100, from: { cx: 0, r: 30 } });
 
 	return (
 		<div id="thediv" style={{ padding: 0 }}>
 			<svg width="800" height="400" fill="#688" ref={inputEl}>
 				<Circle circleObj={circle1} />
-
-				<animated.circle
-					// style={props2}
-					// transform={`translate(${cx} ${cy})`}
-					cx={props2.cx}
-					cy={20}
-					r={props2.r}
-					// fill={fill}
-					onClick={() => console.log('aa')}
-				/>
 			</svg>
 
 			<button onClick={() => {}}>cools nixwe hmm</button>

@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "es2015"],
+    "lib": [
+      "dom",
+      "es2015"
+    ],
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "baseUrl": ".",
@@ -12,6 +15,15 @@
     "target": "es6",
     "jsx": "react"
   },
-  "include": ["src/**/*", "typings.d.ts", "typings/*.d.ts"],
-  "exclude": ["public", "out", "node_modules"]
+  "include": [
+    "src/**/*",
+    "typings.d.ts",
+    "typings/*.d.ts",
+    "types/**/*"
+  ],
+  "exclude": [
+    "public",
+    "out",
+    "node_modules"
+  ]
 }
