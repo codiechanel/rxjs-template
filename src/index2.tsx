@@ -9,6 +9,7 @@ import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { easeInSine } from './rxjs-web-animation';
 import { CircleObj, Circle } from './Circle';
+import { useClickListener } from './hooks';
 
 /* function DemoAnim(props) {
 	const props2 = useSpring({ opacity: 1, from: { opacity: 0 } });
@@ -131,30 +132,30 @@ class CircleObj {
 	}
 } */
 
-function useClickListener(inputEl, eventListener) {
-	// we should pass inputEl
-	// not inputEl.current
-	// useEffect will run after render...
-	// by that time current will have a value
-	useEffect(() => {
-		console.log('useEffect');
-		let element = inputEl.current;
-		// let element = document;
-		let eventName = 'click';
+// function useClickListener(inputEl, eventListener) {
+// 	// we should pass inputEl
+// 	// not inputEl.current
+// 	// useEffect will run after render...
+// 	// by that time current will have a value
+// 	useEffect(() => {
+// 		console.log('useEffect');
+// 		let element = inputEl.current;
+// 		// let element = document;
+// 		let eventName = 'click';
 
-		const isSupported = element && element.addEventListener;
-		if (!isSupported) return;
-		// const eventListener = ({ clientX, clientY }) => {
-		// 	circle1.cx = clientX;
-		// 	circle1.cy = clientY;
-		// };
-		element.addEventListener('click', eventListener);
-		return () => {
-			element.removeEventListener(eventName, eventListener);
-		};
-		// useEventListener("mousemove", handler, inputEl.current);
-	});
-}
+// 		const isSupported = element && element.addEventListener;
+// 		if (!isSupported) return;
+// 		// const eventListener = ({ clientX, clientY }) => {
+// 		// 	circle1.cx = clientX;
+// 		// 	circle1.cy = clientY;
+// 		// };
+// 		element.addEventListener('click', eventListener);
+// 		return () => {
+// 			element.removeEventListener(eventName, eventListener);
+// 		};
+// 		// useEventListener("mousemove", handler, inputEl.current);
+// 	});
+// }
 
 function App() {
 	// duration(2000).subscribe({
