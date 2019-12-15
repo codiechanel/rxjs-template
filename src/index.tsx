@@ -6,6 +6,7 @@ import { observable } from 'mobx'
 import { observer } from 'mobx-react'
 import { useEffect, useRef } from 'react'
 import { useSpring, animated } from 'react-spring'
+import * as d3 from 'd3'
 import {
   easeInQuad,
   easeInBounce,
@@ -64,7 +65,7 @@ function MainSvg(props) {
     },
     complete: () => console.log('done counterx', counterx, circle1.cx)
   }) */
-  tween({
+  /* tween({
     start: 20,
     end: 500,
     duration: 1000,
@@ -75,7 +76,7 @@ function MainSvg(props) {
       circle1.cx = v
     },
     complete: () => console.log('done')
-  })
+  }) */
   useClickListener(inputEl, eventListener)
   let demoCool = new DemoCool()
 
@@ -87,7 +88,21 @@ function MainSvg(props) {
       <demoCool.AppDemo />
       {/*    <SvgDemo />
       <DemoAnim /> */}
-      <button onClick={() => (circle1.fill = '#888')}>coo</button>
+      <button
+        onClick={() => {
+          var t = d3
+            .transition()
+            .duration(750)
+            .ease(d3.easePolyIn)
+          console.log(d3.selectAll('circle'))
+          d3.selectAll('circle')
+            .transition(t)
+            .style('fill', 'red')
+            .attr('cx', 500)
+        }}
+      >
+        coo
+      </button>
     </div>
   )
 }
