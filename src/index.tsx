@@ -1,65 +1,82 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { useState, useEffect } from 'react'
-import styled from '@emotion/styled'
-import ui, { FlexColumn, MembersPanel } from './common/UI'
-import List1 from './components/List1'
-import Members from './components/Members'
-import { Router, Link } from '@reach/router'
-import Home from './components/Home'
-import Dashboard from './components/Dashboard'
-import About from './components/About'
-import NewsList from './components/NewsList'
 import { duration } from './duration'
+import { observable } from 'mobx'
+import { observer } from 'mobx-react'
+import { useEffect, useRef } from 'react'
 
-const HorizontalBox = styled.div`
-  display: flex;
-  width: 100vw;
-  flex-direction: row;
-  justify-content: space-between;
-  flex: 1;
-`
+function MainSvg(props) {
+  let circle1 = new CircleObj(100, 180, 50)
+  circle1.fill = '#567'
+  const inputEl = useRef(null)
+  console.log(props.children)
+  const eventListener = ({ clientX, clientY }) => {
+    circle1.cx = clientX
+    circle1.cy = clientY
+  }
+  useClickListener(inputEl, eventListener)
 
-type NavProp = {
-  // primary?: string;
-  flex: string
+  return (
+    <div id="thediv" style={{ padding: 0 }}>
+      <svg width="800" height="400" fill="#688" ref={inputEl}>
+        {/* {props.children} */}
+        <Circle circleObj={circle1} />
+      </svg>
+      <button onClick={() => (circle1.fill = '#888')}>coo</button>
+    </div>
+  )
 }
 
-const Section = styled.div<NavProp>`
-  /* we are allowed margins here because we dont use 100 */
-  flex: 1;
-  flex: ${props => props.flex};
-  display: flex;
-  flex-direction: row;
-  /*  this needs to be a row 
-  but we dont have to declare it because 
-  its a flex default */
-`
+// you want this to be an object
+// and a component
+const Circle = observer(props => {
+  let { cx, cy, r, fill } = props.circleObj
+  return (
+    <circle
+      cx={cx}
+      cy={cy}
+      r={r}
+      fill={fill}
+      onClick={() => console.log('aa')}
+    />
+  )
+})
 
-const LeftSection = styled(Section)`
-  margin: 10px;
-  background-color: #373c3f;
-`
+class CircleObj {
+  @observable cx
+  @observable cy
+  @observable r
+  @observable fill
+  constructor(cx, cy, r) {
+    this.cx = cx
+    this.cy = cy
+    this.r = r
+  }
+}
 
-const RightSection = styled(Section)`
-  margin-top: 10px;
-  margin-right: 10px;
-  margin-bottom: 10px;
-  background-color: #2f3437;
-`
-
-let useMedia = query => {
-  let [matches, setMatches] = useState(window.matchMedia(query).matches)
-
+function useClickListener(inputEl, eventListener) {
+  // we should pass inputEl
+  // not inputEl.current
+  // useEffect will run after render...
+  // by that time current will have a value
   useEffect(() => {
-    let media = window.matchMedia(query)
-    let listener = () => setMatches(media.matches)
-    media.addListener(listener)
-    listener()
-    return () => media.removeListener(listener)
-  }, [query])
+    console.log('useEffect')
+    let element = inputEl.current
+    // let element = document;
+    let eventName = 'click'
 
-  return matches
+    const isSupported = element && element.addEventListener
+    if (!isSupported) return
+    // const eventListener = ({ clientX, clientY }) => {
+    // 	circle1.cx = clientX;
+    // 	circle1.cy = clientY;
+    // };
+    element.addEventListener('click', eventListener)
+    return () => {
+      element.removeEventListener(eventName, eventListener)
+    }
+    // useEventListener("mousemove", handler, inputEl.current);
+  })
 }
 
 function App() {
@@ -67,34 +84,26 @@ function App() {
     next: v => console.log(`observerA: ${v}`),
     complete: () => console.log('done')
   })
-  let small = useMedia('(min-width: 600px)')
-  let large = useMedia('(min-width: 1000px)')
-  let content = (
-    <LeftSection flex="1">
-      <Router>
-        <Home default path="/" />
-        <NewsList path="news" />
-      </Router>
-    </LeftSection>
+
+  let circle1 = new CircleObj(100, 180, 50)
+  circle1.fill = '#567'
+
+  return (
+    // <Container>
+
+    // padding affects mouse location on svg
+    // <div id="thediv" style={{ padding: 0 }}>
+    <MainSvg>
+      {/* {circles.map((x, i) => {
+            return <Circle key={i} circleObj={x} />;
+          })} */}
+      {/* cx={x.cx} cy={x.cy} r={x.r}  */}
+      {/* <Circle cx={100} cy={180} r={5} />
+        <Circle cx={200} cy={180} r={5} /> */}
+    </MainSvg>
+
+    // </div>
   )
-  /* if screen is larger than 600, then lets display 2 panels */
-  if (small) {
-    content = (
-      <>
-        <LeftSection flex="1">
-          <Home default path="/" />
-        </LeftSection>
-        <RightSection flex="2">
-          <Router primary={false} component={React.Fragment}>
-            <Dashboard default path="dashboard" />
-            <About path="about" />
-          </Router>
-        </RightSection>
-      </>
-    )
-  }
-  // return <HorizontalBox>{content}</HorizontalBox>;
-  return content
 }
 
 ReactDOM.render(
