@@ -27,6 +27,6 @@ export const duration = (ms, scheduler = animationFrameScheduler) =>
 		takeWhile(t => t <= 1)
 	);
 
-export const distance$ = d => t => t * d;
+export const distance = d => t => t * d;
 
 export const pixelsPerSecond = v => ms => (v * ms) / 1000;

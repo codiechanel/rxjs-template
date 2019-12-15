@@ -8,12 +8,19 @@ import { useEffect, useRef } from 'react';
 // import { useSpring, animated } from 'react-spring';
 import { easeInSine } from './rxjs-web-animation';
 import { CircleObj, Circle } from './Circle';
-import { duration, distance$ } from './anim-lib';
+import { duration, distance } from './anim-lib';
 import { map, takeWhile, tap } from 'rxjs/operators';
 
+// this one will return a function
 const elastic = (bounciness: number = 1) => {
 	const p = bounciness * Math.PI;
 	return t => 1 - Math.pow(Math.cos((t * Math.PI) / 2), 3) * Math.cos(t * p);
+};
+
+const elasticOut = t => {
+	return (
+		Math.sin((-13.0 * (t + 1.0) * Math.PI) / 2) * Math.pow(2.0, -10.0 * t) + 1.0
+	);
 };
 
 function App(props) {
@@ -22,12 +29,15 @@ function App(props) {
 	const inputEl = useRef(null);
 	// console.log(props.children);
 	let duration$ = duration(2000);
-	let easing = elastic();
+	let distance$ = distance(300);
+	// let easing = elasticOut();
+	let elastic$ = elastic(2);
 	duration$
 		.pipe(
-			map(easing),
+			// map(elasticOut),
+			map(elastic$),
 			// map(distance$(distanceVal)),
-			map(distance$(300)),
+			map(distance$),
 			tap(
 				frame => {
 					// console.log(frame);
