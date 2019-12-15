@@ -104,7 +104,7 @@ function MainSvg(props) {
 // you want this to be an object
 // and a component
 const Circle = observer(props => {
-	console.log('observer');
+	// console.log('observer');
 	let { cx, cy, r, fill } = props.circleObj;
 	return (
 		<circle
