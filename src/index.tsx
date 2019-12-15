@@ -33,7 +33,8 @@ function moveBall(duration1, distance1, obj, prop, origVal) {
 	let elastic$ = elastic(2);
 	duration$
 		.pipe(
-			map(elasticOut),
+			map(elastic$),
+			// map(elasticOut),
 			// map(linear),
 			// map(distance$(distanceVal)),
 			map(distance$),
@@ -66,6 +67,8 @@ function App(props) {
 		let origx = circle1.cx;
 		let origY = circle1.cy;
 		console.log('xdist', xdist);
+		//  we should call when its truly finished
+		// otherwise we get crazy animations...
 		moveBall(1000, xdist, circle1, 'cx', origx);
 		moveBall(1000, clientY - circle1.cy, circle1, 'cy', origY);
 		// moveBall(2000,xdist , frame => {
