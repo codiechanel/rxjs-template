@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { duration } from './duration'
-import { tween } from './tween'
+import { duration } from './rxjs-web-animation'
+import { tween } from './rxjs-web-animation'
 import { observable } from 'mobx'
 import { observer } from 'mobx-react'
 import { useEffect, useRef } from 'react'
@@ -13,7 +13,7 @@ import {
   easeInElastic,
   easeOutCirc,
   easeInSine
-} from './easing'
+} from './rxjs-web-animation'
 
 function DemoAnim(props) {
   const props2 = useSpring({ opacity: 1, from: { opacity: 0 } })
@@ -56,7 +56,7 @@ function MainSvg(props) {
     requestAnimationFrame(update)
     counter++
   }
-  /*  let counterx = 0
+  /* let counterx = 0
   duration(500).subscribe({
     next: v => {
       counterx++
@@ -65,7 +65,7 @@ function MainSvg(props) {
     },
     complete: () => console.log('done counterx', counterx, circle1.cx)
   }) */
-  /* tween({
+  tween({
     start: 20,
     end: 500,
     duration: 1000,
@@ -76,7 +76,7 @@ function MainSvg(props) {
       circle1.cx = v
     },
     complete: () => console.log('done')
-  }) */
+  })
   useClickListener(inputEl, eventListener)
   let demoCool = new DemoCool()
 
