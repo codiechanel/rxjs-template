@@ -1,6 +1,6 @@
 html {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   /* background-color: lightseagreen; */
   -webkit-font-smoothing: antialiased;
@@ -21,7 +21,7 @@ html {
 }
 
 body {
-  /* background-color: gray; */
+  background-color: steelblue;
   margin: 0px;
   padding: 0px;
   width: 100%;

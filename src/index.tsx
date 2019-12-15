@@ -1,9 +1,38 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { duration } from './duration'
+import { tween } from './tween'
 import { observable } from 'mobx'
 import { observer } from 'mobx-react'
 import { useEffect, useRef } from 'react'
+import { useSpring, animated } from 'react-spring'
+import {
+  easeInQuad,
+  easeInBounce,
+  easeInElastic,
+  easeOutCirc,
+  easeInSine
+} from './easing'
+
+function DemoAnim(props) {
+  const props2 = useSpring({ opacity: 1, from: { opacity: 0 } })
+  return <animated.div style={props2}>I will fade in</animated.div>
+}
+function SvgDemo() {
+  const props = useSpring({ x: 100, from: { x: 0 } })
+  return (
+    <animated.svg strokeDashoffset={props.x}>
+      <path d="..." />
+    </animated.svg>
+  )
+}
+
+class DemoCool {
+  nice = 'great'
+  AppDemo = props => {
+    return <div>hell {this.nice}</div>
+  }
+}
 
 function MainSvg(props) {
   let circle1 = new CircleObj(100, 180, 50)
@@ -14,14 +43,50 @@ function MainSvg(props) {
     circle1.cx = clientX
     circle1.cy = clientY
   }
+  let counter = 0
+  // update()
+  function update() {
+    if (counter > 1000) {
+      {
+        return
+      }
+    }
+    circle1.cx += 0.5
+    requestAnimationFrame(update)
+    counter++
+  }
+  /*  let counterx = 0
+  duration(500).subscribe({
+    next: v => {
+      counterx++
+      circle1.cx += 6
+      // console.log(`observerA: ${v}`)
+    },
+    complete: () => console.log('done counterx', counterx, circle1.cx)
+  }) */
+  tween({
+    start: 20,
+    end: 500,
+    duration: 1000,
+    easing: easeInSine
+  }).subscribe({
+    next: v => {
+      // console.log(v)
+      circle1.cx = v
+    },
+    complete: () => console.log('done')
+  })
   useClickListener(inputEl, eventListener)
+  let demoCool = new DemoCool()
 
   return (
     <div id="thediv" style={{ padding: 0 }}>
       <svg width="800" height="400" fill="#688" ref={inputEl}>
-        {/* {props.children} */}
         <Circle circleObj={circle1} />
       </svg>
+      <demoCool.AppDemo />
+      {/*    <SvgDemo />
+      <DemoAnim /> */}
       <button onClick={() => (circle1.fill = '#888')}>coo</button>
     </div>
   )
@@ -33,8 +98,9 @@ const Circle = observer(props => {
   let { cx, cy, r, fill } = props.circleObj
   return (
     <circle
-      cx={cx}
-      cy={cy}
+      transform={`translate(${cx} ${cy})`}
+      // cx={cx}
+      // cy={cy}
       r={r}
       fill={fill}
       onClick={() => console.log('aa')}
@@ -80,10 +146,10 @@ function useClickListener(inputEl, eventListener) {
 }
 
 function App() {
-  duration(2000).subscribe({
-    next: v => console.log(`observerA: ${v}`),
-    complete: () => console.log('done')
-  })
+  // duration(2000).subscribe({
+  //   next: v => console.log(`observerA: ${v}`),
+  //   complete: () => console.log('done')
+  // })
 
   let circle1 = new CircleObj(100, 180, 50)
   circle1.fill = '#567'
