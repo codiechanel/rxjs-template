@@ -27,8 +27,47 @@ const elasticOut = t => {
 	);
 };
 
+function computeValue(t, dist) {
+	let distance$ = distance(dist);
+
+	let x = elasticOut(t);
+	x = distance$(x);
+	return x;
+}
+function interpolate(duration1, distance1, obj, prop, origVal) {
+	let duration$ = duration(duration1);
+	let distance$ = distance(distance1);
+	let elastic$ = elastic(2);
+	duration$
+		/* 	.pipe(
+			// map(elastic$),
+			map(elasticOut),
+			// map(linear),
+			// map(distance$(distanceVal)),
+			map(distance$),
+			tap(
+				frame => {
+					// console.log(frame);
+					obj[prop] = origVal + frame;
+					// circle1.cx = frame;
+				},
+				err => console.log(` error:`, err),
+				() => {
+					// make sure we get exact
+					obj[prop] = origVal + distance1;
+					console.log('Animated', 'completed');
+				}
+			)
+		) */
+		.subscribe({
+			next: frame => {
+				// console.log('aa', computeValue(frame, distance1))
+				obj[prop] = origVal + computeValue(frame, distance1);
+			}
+		});
+}
 // could use from to syntax plus optional duration which default to 1000
-function moveBall(duration1, distance1, obj, prop, origVal) {
+function moveBall2(duration1, distance1, obj, prop, origVal) {
 	let duration$ = duration(duration1);
 	let distance$ = distance(distance1);
 	let elastic$ = elastic(2);
@@ -56,9 +95,10 @@ function moveBall(duration1, distance1, obj, prop, origVal) {
 		.subscribe();
 }
 
-function App(props) {
+export function App(props) {
 	let circle1 = new CircleObj(100, 180, 50);
 	circle1.fill = '#567';
+	circle1.opacity = 0;
 	const inputEl = useRef(null);
 	const eventListener = ({ clientX, clientY }) => {
 		// circle1.cx = clientX;
@@ -70,8 +110,9 @@ function App(props) {
 		console.log('xdist', xdist);
 		//  we should call when its truly finished
 		// otherwise we get crazy animations...
-		moveBall(1000, xdist, circle1, 'cx', origx);
-		moveBall(1000, clientY - circle1.cy, circle1, 'cy', origY);
+		interpolate(1000, xdist, circle1, 'cx', origx);
+		interpolate(1000, clientY - circle1.cy, circle1, 'cy', origY);
+		interpolate(4000, 1, circle1, 'opacity', 0);
 		// moveBall(2000,xdist , frame => {
 		// 	// console.log(frame);
 		// 	xFrameTotal += frame;
@@ -97,9 +138,9 @@ function App(props) {
 		</div>
 	);
 }
-ReactDOM.render(
-	<App />,
-	document.getElementById('root')
-	// <Hello compiler="TypeScript" framework="React" />,
-	// document.getElementById("root")
-);
+// ReactDOM.render(
+// 	<App />,
+// 	document.getElementById('root')
+// 	// <Hello compiler="TypeScript" framework="React" />,
+// 	// document.getElementById("root")
+// );
