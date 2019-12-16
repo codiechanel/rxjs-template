@@ -9,62 +9,11 @@ import { useEffect, useRef, useState } from 'react';
 import { easeInSine } from './rxjs-web-animation';
 import { CircleObj, Circle } from './Circle';
 import { duration, distance } from './anim-lib';
-import { elasticOut } from './eases';
+import { elasticOut, elastic } from './eases';
 import { map, takeWhile, tap } from 'rxjs/operators';
 import { useClickListener, useMySpring, computeValue } from './hooks';
 // this one will return a function
-const elastic = (bounciness: number = 1) => {
-	const p = bounciness * Math.PI;
-	return t => 1 - Math.pow(Math.cos((t * Math.PI) / 2), 3) * Math.cos(t * p);
-};
 
-// const linear = t => {
-// 	return t;
-// };
-
-// const elasticOut = t => {
-// 	return (
-// 		Math.sin((-13.0 * (t + 1.0) * Math.PI) / 2) * Math.pow(2.0, -10.0 * t) + 1.0
-// 	);
-// };
-
-// function computeValue(t, dist) {
-// 	let distance$ = distance(dist);
-
-// 	let x = elasticOut(t);
-// 	x = distance$(x);
-// 	return x;
-// }
-// we could pass in a class
-// no problem
-function interpolateCool(from, to, durationValue = 1000) {
-	// console.log(Object.keys(obj));
-	let duration$ = duration(durationValue);
-	// let distance$ = distance(distance1);
-	// let elastic$ = elastic(2);
-	let origValues = {};
-	let distances = {};
-	Object.keys(to).forEach(x => {
-		origValues[x] = from[x];
-	});
-	Object.keys(to).forEach(x => {
-		distances[x] = to[x] - from[x];
-	});
-	console.log(distances);
-	duration$.subscribe({
-		next: frame => {
-			// console.log('aa', computeValue(frame, distance1))
-			Object.keys(to).forEach(x => {
-				from[x] = origValues[x] + computeValue(frame, distances[x]);
-			});
-		},
-		complete: () => {
-			// make sure we get exact
-			// obj[prop] = origVal + distance1;
-			console.log('Animated', 'completed');
-		}
-	});
-}
 // we could pass in a class
 // no problem
 function interpolate(duration1, distance1, obj, prop, origVal) {
@@ -106,7 +55,7 @@ function interpolate(duration1, distance1, obj, prop, origVal) {
 		});
 }
 // could use from to syntax plus optional duration which default to 1000
-function moveBall2(duration1, distance1, obj, prop, origVal) {
+function moveBall(duration1, distance1, obj, prop, origVal) {
 	let duration$ = duration(duration1);
 	let distance$ = distance(distance1);
 	let elastic$ = elastic(2);
@@ -134,54 +83,6 @@ function moveBall2(duration1, distance1, obj, prop, origVal) {
 		.subscribe();
 }
 
-// function useMySpring(obj) {
-// 	let origValues = {};
-// 	let { from, to } = obj;
-// 	Object.keys(to).forEach(x => {
-// 		origValues[x] = from[x];
-// 	});
-// 	const [prop, setProp] = useState(origValues);
-
-// 	useEffect(() => {
-// 		console.log('useEffect');
-
-// 		let durationValue = 1000;
-
-// 		let duration$ = duration(durationValue);
-// 		// let distance$ = distance(distance1);
-// 		// let elastic$ = elastic(2);
-
-// 		let distances = {};
-
-// 		Object.keys(to).forEach(x => {
-// 			distances[x] = to[x] - from[x];
-// 		});
-
-// 		let subs = duration$.subscribe({
-// 			next: frame => {
-// 				// console.log('aa', computeValue(frame, distance1))
-// 				let newObj = {};
-// 				Object.keys(to).forEach(x => {
-// 					newObj[x] = origValues[x] + computeValue(frame, distances[x]);
-
-// 					// from[x] = origValues[x] + computeValue(frame, distances[x]);
-// 				});
-// 				setProp(newObj);
-// 			},
-// 			complete: () => {
-// 				// make sure we get exact
-// 				// obj[prop] = origVal + distance1;
-// 				console.log('Animated', 'completed');
-// 			}
-// 		});
-
-// 		return () => subs.unsubscribe();
-// 		// we want to run this only once
-// 	}, []);
-
-// 	return prop;
-// }
-
 export function App(props) {
 	let circle1 = new CircleObj(100, 180, 50);
 	circle1.fill = 'orange';
@@ -195,14 +96,15 @@ export function App(props) {
 		let xdist = clientX - circle1.cx;
 		let origx = circle1.cx;
 		let origY = circle1.cy;
+
 		// console.log('xdist', xdist);
 		//  we should call when its truly finished
 		// otherwise we get crazy animations...
-		// interpolate(1000, xdist, circle1, 'cx', origx);
-		// interpolate(1000, clientY - circle1.cy, circle1, 'cy', origY);
-		// interpolate(2000, 1, circle1, 'opacity', 0);
-		circle1.opacity = 0;
-		interpolateCool(circle1, { cx: clientX, cy: clientY, opacity: 1 }, 2000);
+		interpolate(1000, xdist, circle1, 'cx', origx);
+		interpolate(1000, clientY - circle1.cy, circle1, 'cy', origY);
+		interpolate(2000, 1, circle1, 'opacity', 0);
+		// circle1.opacity = 0;
+		// interpolateAll(circle1, { cx: clientX, cy: clientY, opacity: 1 }, 2000);
 
 		// moveBall(2000,xdist , frame => {
 		// 	// console.log(frame);
