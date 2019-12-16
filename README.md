@@ -8,7 +8,7 @@ such as
 interpolate({x : config({duration : 1000, value: 20})})
 ```
 
-In react spring, it wont rerender your component like in a render props method. Instead it delegates it to some wrapper like `<animated.circle>`. From there it can choose whether to animate it by setting the attribute directly, or setting it via css. I suspect it uses css transforms since it owns the component so it has access to the element id.
+In react spring, it wont rerender your component like in a render props method. Instead it delegates it to some wrapper like `<animated.circle>`. From there it can choose whether to animate it by setting the attribute directly, or setting it via css. I suspect it uses css transforms since it owns the component so it has access to the element id. Setting via css has some advantages for it bypasses react rendering cycle.
 
 This code will render only once. The component that actually rerenders is `animated.circle`.
 
