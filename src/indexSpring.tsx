@@ -68,6 +68,7 @@ export function App(props) {
 	// console.log(props.children);
 	const props2 = useSpring({ cx: 300, r: 100, from: { cx: 0, r: 30 } });
 
+	console.log('render');
 	return (
 		<div id="thediv" style={{ padding: 0 }}>
 			<svg width="800" height="400" fill="#688" ref={inputEl}>
