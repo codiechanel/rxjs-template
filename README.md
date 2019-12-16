@@ -13,8 +13,8 @@ In react spring, it wont rerender your component like in a render props method. 
 This code will render only once. The component that rerenders is `animated.circle`.
 
 ```
-	const props = useSpring({ cx: 300, r: 100, from: { cx: 0, r: 30 } });
+const props = useSpring({ cx: 300, r: 100, from: { cx: 0, r: 30 } });
 
-  return <animated.circle	cx={props.cx} 					cy={20}	r={props.r}	/>
+return <animated.circle	cx={props.cx} cy={20}	r={props.r}	/>
 
 ```
