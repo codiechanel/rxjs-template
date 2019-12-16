@@ -15,11 +15,6 @@ This code will render only once. The component that rerenders is `animated.circl
 ```
 	const props = useSpring({ cx: 300, r: 100, from: { cx: 0, r: 30 } });
 
-  return <animated.circle
-				cx={props.cx}
-					cy={20}
-					r={props.r}
-
-				/>
+  return <animated.circle	cx={props.cx} 					cy={20}	r={props.r}	/>
 
 ```
