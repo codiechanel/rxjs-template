@@ -9,31 +9,32 @@ import { useEffect, useRef, useState } from 'react';
 import { easeInSine } from './rxjs-web-animation';
 import { CircleObj, Circle } from './Circle';
 import { duration, distance } from './anim-lib';
+import { elasticOut } from './eases';
 import { map, takeWhile, tap } from 'rxjs/operators';
-import { useClickListener } from './hooks';
+import { useClickListener, useMySpring, computeValue } from './hooks';
 // this one will return a function
 const elastic = (bounciness: number = 1) => {
 	const p = bounciness * Math.PI;
 	return t => 1 - Math.pow(Math.cos((t * Math.PI) / 2), 3) * Math.cos(t * p);
 };
 
-const linear = t => {
-	return t;
-};
+// const linear = t => {
+// 	return t;
+// };
 
-const elasticOut = t => {
-	return (
-		Math.sin((-13.0 * (t + 1.0) * Math.PI) / 2) * Math.pow(2.0, -10.0 * t) + 1.0
-	);
-};
+// const elasticOut = t => {
+// 	return (
+// 		Math.sin((-13.0 * (t + 1.0) * Math.PI) / 2) * Math.pow(2.0, -10.0 * t) + 1.0
+// 	);
+// };
 
-function computeValue(t, dist) {
-	let distance$ = distance(dist);
+// function computeValue(t, dist) {
+// 	let distance$ = distance(dist);
 
-	let x = elasticOut(t);
-	x = distance$(x);
-	return x;
-}
+// 	let x = elasticOut(t);
+// 	x = distance$(x);
+// 	return x;
+// }
 // we could pass in a class
 // no problem
 function interpolateCool(from, to, durationValue = 1000) {
@@ -133,53 +134,53 @@ function moveBall2(duration1, distance1, obj, prop, origVal) {
 		.subscribe();
 }
 
-function useMySpring(obj) {
-	let origValues = {};
-	let { from, to } = obj;
-	Object.keys(to).forEach(x => {
-		origValues[x] = from[x];
-	});
-	const [prop, setProp] = useState(origValues);
+// function useMySpring(obj) {
+// 	let origValues = {};
+// 	let { from, to } = obj;
+// 	Object.keys(to).forEach(x => {
+// 		origValues[x] = from[x];
+// 	});
+// 	const [prop, setProp] = useState(origValues);
 
-	useEffect(() => {
-		console.log('useEffect');
+// 	useEffect(() => {
+// 		console.log('useEffect');
 
-		let durationValue = 1000;
+// 		let durationValue = 1000;
 
-		let duration$ = duration(durationValue);
-		// let distance$ = distance(distance1);
-		// let elastic$ = elastic(2);
+// 		let duration$ = duration(durationValue);
+// 		// let distance$ = distance(distance1);
+// 		// let elastic$ = elastic(2);
 
-		let distances = {};
+// 		let distances = {};
 
-		Object.keys(to).forEach(x => {
-			distances[x] = to[x] - from[x];
-		});
+// 		Object.keys(to).forEach(x => {
+// 			distances[x] = to[x] - from[x];
+// 		});
 
-		let subs = duration$.subscribe({
-			next: frame => {
-				// console.log('aa', computeValue(frame, distance1))
-				let newObj = {};
-				Object.keys(to).forEach(x => {
-					newObj[x] = origValues[x] + computeValue(frame, distances[x]);
+// 		let subs = duration$.subscribe({
+// 			next: frame => {
+// 				// console.log('aa', computeValue(frame, distance1))
+// 				let newObj = {};
+// 				Object.keys(to).forEach(x => {
+// 					newObj[x] = origValues[x] + computeValue(frame, distances[x]);
 
-					// from[x] = origValues[x] + computeValue(frame, distances[x]);
-				});
-				setProp(newObj);
-			},
-			complete: () => {
-				// make sure we get exact
-				// obj[prop] = origVal + distance1;
-				console.log('Animated', 'completed');
-			}
-		});
+// 					// from[x] = origValues[x] + computeValue(frame, distances[x]);
+// 				});
+// 				setProp(newObj);
+// 			},
+// 			complete: () => {
+// 				// make sure we get exact
+// 				// obj[prop] = origVal + distance1;
+// 				console.log('Animated', 'completed');
+// 			}
+// 		});
 
-		return () => subs.unsubscribe();
-		// we want to run this only once
-	}, []);
+// 		return () => subs.unsubscribe();
+// 		// we want to run this only once
+// 	}, []);
 
-	return prop;
-}
+// 	return prop;
+// }
 
 export function App(props) {
 	let circle1 = new CircleObj(100, 180, 50);
@@ -231,7 +232,7 @@ export function App(props) {
 
 	return (
 		<div id="thediv" style={{ padding: 0 }}>
-			<div>{prop2.cx}</div>
+			<div>{prop2['cx']}</div>
 			<svg width="800" height="400" fill="#688" ref={inputEl}>
 				<Circle circleObj={circle1} />
 			</svg>
