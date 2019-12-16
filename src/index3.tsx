@@ -36,9 +36,9 @@ function computeValue(t, dist) {
 }
 // we could pass in a class
 // no problem
-function interpolateCool(from, to) {
+function interpolateCool(from, to, durationValue = 1000) {
 	// console.log(Object.keys(obj));
-	let duration$ = duration(1000);
+	let duration$ = duration(durationValue);
 	// let distance$ = distance(distance1);
 	// let elastic$ = elastic(2);
 	let origValues = {};
@@ -135,7 +135,7 @@ function moveBall2(duration1, distance1, obj, prop, origVal) {
 
 export function App(props) {
 	let circle1 = new CircleObj(100, 180, 50);
-	circle1.fill = '#567';
+	circle1.fill = 'orange';
 	circle1.opacity = 0;
 	// console.log(Object.keys(circle1));
 	const inputEl = useRef(null);
@@ -152,7 +152,8 @@ export function App(props) {
 		// interpolate(1000, xdist, circle1, 'cx', origx);
 		// interpolate(1000, clientY - circle1.cy, circle1, 'cy', origY);
 		// interpolate(2000, 1, circle1, 'opacity', 0);
-		interpolateCool(circle1, { cx: clientX, cy: clientY, opacity: 1 });
+		circle1.opacity = 0;
+		interpolateCool(circle1, { cx: clientX, cy: clientY, opacity: 1 }, 2000);
 
 		// moveBall(2000,xdist , frame => {
 		// 	// console.log(frame);
