@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom';
 import { tween } from './rxjs-web-animation';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // import { useSpring, animated } from 'react-spring';
 import { easeInSine } from './rxjs-web-animation';
 import { CircleObj, Circle } from './Circle';
@@ -133,10 +133,58 @@ function moveBall2(duration1, distance1, obj, prop, origVal) {
 		.subscribe();
 }
 
+function useMySpring(obj) {
+	let origValues = {};
+	let { from, to } = obj;
+	Object.keys(to).forEach(x => {
+		origValues[x] = from[x];
+	});
+	const [prop, setProp] = useState(origValues);
+
+	useEffect(() => {
+		console.log('useEffect');
+
+		let durationValue = 1000;
+
+		let duration$ = duration(durationValue);
+		// let distance$ = distance(distance1);
+		// let elastic$ = elastic(2);
+
+		let distances = {};
+
+		Object.keys(to).forEach(x => {
+			distances[x] = to[x] - from[x];
+		});
+
+		let subs = duration$.subscribe({
+			next: frame => {
+				// console.log('aa', computeValue(frame, distance1))
+				let newObj = {};
+				Object.keys(to).forEach(x => {
+					newObj[x] = origValues[x] + computeValue(frame, distances[x]);
+
+					// from[x] = origValues[x] + computeValue(frame, distances[x]);
+				});
+				setProp(newObj);
+			},
+			complete: () => {
+				// make sure we get exact
+				// obj[prop] = origVal + distance1;
+				console.log('Animated', 'completed');
+			}
+		});
+
+		return () => subs.unsubscribe();
+		// we want to run this only once
+	}, []);
+
+	return prop;
+}
+
 export function App(props) {
 	let circle1 = new CircleObj(100, 180, 50);
 	circle1.fill = 'orange';
-	circle1.opacity = 0;
+	circle1.opacity = 1;
 	// console.log(Object.keys(circle1));
 	const inputEl = useRef(null);
 	const eventListener = ({ clientX, clientY }) => {
@@ -167,11 +215,23 @@ export function App(props) {
 
 		// circle1.cy = clientY;
 	};
-	useClickListener(inputEl, eventListener);
+	// useClickListener(inputEl, eventListener);
+
+	let prop2 = useMySpring({
+		from: circle1,
+		to: { cx: 300, cy: 300, opacity: 1 }
+	});
+
+	circle1.cx = prop2['cx'];
+
+	circle1.cy = prop2['cy'];
+	// console.log('render', prop2);
+
 	// console.log(props.children);
 
 	return (
 		<div id="thediv" style={{ padding: 0 }}>
+			<div>{prop2.cx}</div>
 			<svg width="800" height="400" fill="#688" ref={inputEl}>
 				<Circle circleObj={circle1} />
 			</svg>
