@@ -34,7 +34,40 @@ function computeValue(t, dist) {
 	x = distance$(x);
 	return x;
 }
+// we could pass in a class
+// no problem
+function interpolateCool(from, to) {
+	// console.log(Object.keys(obj));
+	let duration$ = duration(1000);
+	// let distance$ = distance(distance1);
+	// let elastic$ = elastic(2);
+	let origValues = {};
+	let distances = {};
+	Object.keys(to).forEach(x => {
+		origValues[x] = from[x];
+	});
+	Object.keys(to).forEach(x => {
+		distances[x] = to[x] - from[x];
+	});
+	console.log(distances);
+	duration$.subscribe({
+		next: frame => {
+			// console.log('aa', computeValue(frame, distance1))
+			Object.keys(to).forEach(x => {
+				from[x] = origValues[x] + computeValue(frame, distances[x]);
+			});
+		},
+		complete: () => {
+			// make sure we get exact
+			// obj[prop] = origVal + distance1;
+			console.log('Animated', 'completed');
+		}
+	});
+}
+// we could pass in a class
+// no problem
 function interpolate(duration1, distance1, obj, prop, origVal) {
+	console.log(Object.keys(obj));
 	let duration$ = duration(duration1);
 	let distance$ = distance(distance1);
 	let elastic$ = elastic(2);
@@ -63,6 +96,11 @@ function interpolate(duration1, distance1, obj, prop, origVal) {
 			next: frame => {
 				// console.log('aa', computeValue(frame, distance1))
 				obj[prop] = origVal + computeValue(frame, distance1);
+			},
+			complete: () => {
+				// make sure we get exact
+				obj[prop] = origVal + distance1;
+				console.log('Animated', 'completed');
 			}
 		});
 }
@@ -99,6 +137,7 @@ export function App(props) {
 	let circle1 = new CircleObj(100, 180, 50);
 	circle1.fill = '#567';
 	circle1.opacity = 0;
+	// console.log(Object.keys(circle1));
 	const inputEl = useRef(null);
 	const eventListener = ({ clientX, clientY }) => {
 		// circle1.cx = clientX;
@@ -107,12 +146,14 @@ export function App(props) {
 		let xdist = clientX - circle1.cx;
 		let origx = circle1.cx;
 		let origY = circle1.cy;
-		console.log('xdist', xdist);
+		// console.log('xdist', xdist);
 		//  we should call when its truly finished
 		// otherwise we get crazy animations...
-		interpolate(1000, xdist, circle1, 'cx', origx);
-		interpolate(1000, clientY - circle1.cy, circle1, 'cy', origY);
-		interpolate(4000, 1, circle1, 'opacity', 0);
+		// interpolate(1000, xdist, circle1, 'cx', origx);
+		// interpolate(1000, clientY - circle1.cy, circle1, 'cy', origY);
+		// interpolate(2000, 1, circle1, 'opacity', 0);
+		interpolateCool(circle1, { cx: clientX, cy: clientY, opacity: 1 });
+
 		// moveBall(2000,xdist , frame => {
 		// 	// console.log(frame);
 		// 	xFrameTotal += frame;

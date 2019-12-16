@@ -4,7 +4,7 @@ import * as React from 'react';
 export const Circle = observer(props => {
 	// console.log('observer');
 	let { cx, cy, r, fill, opacity } = props.circleObj;
-	console.log(opacity);
+	// console.log(opacity);
 	return (
 		<circle
 			// transform={`translate(${cx} ${cy})`}
